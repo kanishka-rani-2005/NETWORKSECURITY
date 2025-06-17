@@ -20,9 +20,9 @@ from sklearn.svm import SVC
 from sklearn.ensemble import AdaBoostClassifier,RandomForestClassifier,GradientBoostingClassifier
 from sklearn.neighbors import KNeighborsClassifier
 
-
-print("Debug - type of NetworkModel:", type(NetworkModel))
-print("Debug - NetworkModel:", NetworkModel)
+import mlflow
+# print("Debug - type of NetworkModel:", type(NetworkModel))
+# print("Debug - NetworkModel:", NetworkModel)
 
 
 class ModelTrainer:
@@ -34,6 +34,18 @@ class ModelTrainer:
             logging.error(e)
             raise NetworkSecurityException(e,sys)
         
+
+    def track_mlflow(self,best_model,classification_metric):
+        with mlflow.start_run():
+            f1_score=classification_metric.f1_score
+            precision_score=classification_metric.precision_score
+            recall_score=classification_metric.recall_score
+
+            mlflow.log_metric("f1_score",f1_score)
+            mlflow.log_metric("precision",precision_score)
+            mlflow.log_metric("recall_score",recall_score)
+            mlflow.sklearn.log_model(best_model,"model")
+
 
     def train_model(self,x_train,y_train,x_test,y_test):
         try:
@@ -69,7 +81,7 @@ class ModelTrainer:
 
                 "ada_boost": {
                     'learning_rate':[.1,.01,.001],
-                    'n_estimators': [8,16,32,64,128,256]
+                    'n_estimators': [8,16,64,128,256]
                 },
 
                 "random_forest": {
@@ -84,7 +96,7 @@ class ModelTrainer:
                     'subsample':[0.6,0.7,0.75,0.85,0.9],
                     # 'criterion':['squared_error', 'friedman_mse'],
                     # 'max_features':['auto','sqrt','log2'],
-                    'n_estimators': [8,16,32,64,128,256]
+                    'n_estimators': [8,16,64,128,256]
                 },
 
                 "k_nearest_neighbors": {
@@ -105,12 +117,16 @@ class ModelTrainer:
 
             logging.info(f"Best model is : {best_model_name} and score is {best_model_score}")
             y_train_pred=best_model.predict(x_train)
-            y_test_pred=best_model.predict(x_test)
-
-            
-            
             classification_train_metric=get_classification_report(y_true=y_train,y_pred=y_train_pred)
+
+            #Track ml flow
+            self.track_mlflow(best_model,classification_train_metric)
+
+            y_test_pred=best_model.predict(x_test)            
             classification_test_metric=get_classification_report(y_true=y_test,y_pred=y_test_pred)
+
+            self.track_mlflow(best_model,classification_test_metric)
+
 
             logging.info(f"Train data scores :{classification_train_metric}")
             logging.info(f"Test data scores :{classification_test_metric}")
