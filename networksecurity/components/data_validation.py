@@ -59,24 +59,29 @@ class DataValidation:
             for column in base_df.columns:
                 d1=base_df[column]
                 d2=current_df[column]
+                # finding if same distance between both columns
                 is_same_dist=ks_2samp(d1,d2)
 
                 if threshold<=is_same_dist.pvalue:
-                    is_found=False
+                    is_found=False  
                 else:
                     is_found=True
                     status=False
+                    # insert p value and distance to report 
                 report.update({
                     column:{
                         "p_value":is_same_dist.pvalue,
                         "is_drift_found":is_found
                     }
                 })
+                # find path to store report 
             drift_report_file_path= self.data_validation_config.drift_report_file_path
 
+            
             dir_path=os.path.dirname(drift_report_file_path)
             os.makedirs(dir_path,exist_ok=True)
 
+            # write report to its location
             write_yaml_file(file_path=drift_report_file_path,content=report)
 
             logging.info(f"Drift report saved at {drift_report_file_path}")
@@ -132,6 +137,8 @@ class DataValidation:
             train_dataframe.to_csv(self.data_validation_config.valid_train_file_path,index=False,header=True)
 
             test_dataframe.to_csv(self.data_validation_config.valid_test_file_path,index=False,header=True)
+
+            # create a artifact to return 
 
             data_validation_artifact=DataValidationArtifact(
                 validation_status=status,
