@@ -49,10 +49,7 @@ class ModelTrainer:
             mlflow.log_metric("recall_score",recall_score)
             local_model_path = "final_model/mlflow_model.pkl"
             save_object(local_model_path, best_model)
-
             mlflow.log_artifact(local_model_path)
-
-
 
     def train_model(self,x_train,y_train,x_test,y_test):
         try:
