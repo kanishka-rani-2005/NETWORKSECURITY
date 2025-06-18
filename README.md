@@ -126,6 +126,6 @@ uvicorn main:app --reload
 
 
 ```
-## 🖼️ Overview
+## 🖼️ Screenshot
 
 <img src="templates/image.png" alt="App Overview" width="600"/>
