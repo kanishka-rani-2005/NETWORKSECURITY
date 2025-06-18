@@ -122,3 +122,10 @@ MONGO_DB_URL=mongodb+srv://<username>:<password>@cluster0.mongodb.net/
 
 ```bash
 uvicorn main:app --reload
+
+
+
+```
+## 🖼️ Overview
+
+<img src="templates/image.png" alt="App Overview" width="600"/>
