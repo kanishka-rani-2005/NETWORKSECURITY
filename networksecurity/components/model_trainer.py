@@ -21,9 +21,10 @@ from sklearn.ensemble import AdaBoostClassifier,RandomForestClassifier,GradientB
 from sklearn.neighbors import KNeighborsClassifier
 
 import mlflow
-# print("Debug - type of NetworkModel:", type(NetworkModel))
-# print("Debug - NetworkModel:", NetworkModel)
+import dagshub
 
+dagshub.init(repo_owner='kanishka-rani-2005', repo_name='NETWORKSECURITY', mlflow=True)
+# Dagshub init done
 
 class ModelTrainer:
     def __init__(self,model_trainer_config:ModelTrainerConfig,data_transformation_artifact:DataTransformationArtifact):
@@ -36,6 +37,8 @@ class ModelTrainer:
         
 
     def track_mlflow(self,best_model,classification_metric):
+        mlflow.set_tracking_uri("https://dagshub.com/kanishka-rani-2005/NETWORKSECURITY.mlflow")
+        mlflow.set_experiment("NetworkSecurityExperiment")
         with mlflow.start_run():
             f1_score=classification_metric.f1_score
             precision_score=classification_metric.precision_score
@@ -44,7 +47,11 @@ class ModelTrainer:
             mlflow.log_metric("f1_score",f1_score)
             mlflow.log_metric("precision",precision_score)
             mlflow.log_metric("recall_score",recall_score)
-            mlflow.sklearn.log_model(best_model,"model")
+            local_model_path = "final_model/mlflow_model.pkl"
+            save_object(local_model_path, best_model)
+
+            mlflow.log_artifact(local_model_path)
+
 
 
     def train_model(self,x_train,y_train,x_test,y_test):
