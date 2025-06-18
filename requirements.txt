@@ -11,7 +11,9 @@ pymongo[srv]==3.6
 scikit-learn
 PyYAML
 dill
-mlflow
+mlflow>=2.0.0
 dagshub
+fastapi
+uvicorn
 
 -e .

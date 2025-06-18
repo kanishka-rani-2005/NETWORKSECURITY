@@ -5,7 +5,7 @@ from networksecurity.exception.exception import NetworkSecurityException
 from networksecurity.logging.logger import logging
 
 from networksecurity.entity.config_entity import ModelTrainerConfig
-from networksecurity.entity.artifact_entity import ModelTrainerArtifact,ClassificationMetricArtifact,DataTransformationArtifact
+from networksecurity.entity.artifact_entity import ModelTrainerArtifact,DataTransformationArtifact
 
 
 from networksecurity.utils.main_utils.utils import save_object,load_object,evaluate_models
