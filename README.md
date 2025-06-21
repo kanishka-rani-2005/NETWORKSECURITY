@@ -1,6 +1,6 @@
 # 🛡️ Network Security Threat Detection API
 
-This project is an end-to-end Machine Learning pipeline for predicting and analyzing potential threats in network data. It uses **FastAPI** for deploying the model as a RESTful service.
+This project is an end-to-end Machine Learning pipeline for predicting and analyzing potential threats in network data. It uses **FastAPI** as a RESTful service.
 
 ---
 
